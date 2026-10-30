@@ -1,0 +1,12 @@
+project_id                        = "palette-503123"
+region                            = "us-central1"
+storage_location                  = "US-CENTRAL1"
+environment                       = "staging"
+alert_email                       = "nizar.main01@gmail.com"
+application_bucket_operator_email = "nizar.main01@gmail.com"
+
+common_labels = {
+  app         = "palette"
+  environment = "staging"
+  managed_by  = "terraform"
+}

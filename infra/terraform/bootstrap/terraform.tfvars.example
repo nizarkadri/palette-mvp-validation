@@ -1,0 +1,12 @@
+project_id            = "palette-503123"
+region                = "us-central1"
+state_bucket_name     = "palette-staging-tfstate-palette503123"
+state_bucket_location = "US-CENTRAL1"
+state_operator_email  = "nizar.main01@gmail.com"
+
+common_labels = {
+  app         = "palette"
+  environment = "staging"
+  managed_by  = "terraform"
+  purpose     = "tfstate"
+}

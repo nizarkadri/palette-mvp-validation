@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI Palette Explorer</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+:root{
+  --bg-app:#0f0f17;--bg-panel:#13131e;--bg-surface:#1a1a28;--bg-hover:#22223a;
+  --border:rgba(255,255,255,0.08);--text-1:#f0f0f5;--text-2:#9090a8;--text-3:#55556a;
+  --accent-p:#8b6fff;--accent-s:#38bdf8;--accent-a:#fbbf24;
+}
+body{background:var(--bg-app);color:var(--text-1)}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-columns:1fr 380px;height:100vh}
+
+/* ── LEFT: PHONE PREVIEW ── */
+.preview-side{background:#0a0a12;display:flex;align-items:center;justify-content:center;padding:20px}
+.phone{
+  width:300px;height:620px;border-radius:36px;border:6px solid #1e1e30;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 32px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.04);
+  background:var(--fin-bg,#0d1f1a);position:relative;
+}
+.dynamic-island{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:80px;height:22px;background:#000;border-radius:20px;z-index:10;
+}
+.status-bar{
+  height:40px;background:var(--fin-bg,#0d1f1a);
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 18px 6px;font-size:11px;font-weight:600;
+  color:var(--fin-nav-text,#ffffff);flex-shrink:0;
+}
+
+/* NAV */
+.fin-nav{
+  height:52px;background:var(--fin-bg,#0d1f1a);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;flex-shrink:0;
+}
+.fin-nav-icon{font-size:20px;color:var(--fin-nav-text,#fff);opacity:0.8}
+.fin-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--fin-avatar,#e8b49a);flex-shrink:0;
+}
+
+/* FEED */
+.fin-feed{flex:1;overflow-y:auto;background:var(--fin-bg,#0d1f1a);padding:16px;display:flex;flex-direction:column;gap:14px}
+.fin-feed::-webkit-scrollbar{display:none}
+
+/* GREETING */
+.fin-greeting{}
+.fin-name{font-size:24px;font-weight:700;color:var(--fin-heading,#ffffff);line-height:1.2}
+.fin-sub{font-size:16px;color:var(--fin-muted,#7a9a90);margin-top:3px}
+
+/* CARD ROW */
+.fin-card-row{display:flex;gap:10px}
+.fin-plus-btn{
+  width:54px;border-radius:14px;
+  background:var(--fin-card,#1a3a30);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--fin-accent,#2dd4bf);flex-shrink:0;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.fin-card{
+  flex:1;border-radius:14px;
+  background:var(--fin-card,#1a3a30);
+  padding:14px;min-height:145px;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.fin-card-top{display:flex;justify-content:space-between;align-items:center}
+.fin-chip{
+  width:28px;height:20px;border-radius:4px;
+  background:rgba(255,255,255,0.15);
+}
+.fin-visa{font-size:14px;font-weight:700;font-style:italic;color:var(--fin-accent,#2dd4bf)}
+.fin-cardnum{
+  font-size:15px;font-weight:600;letter-spacing:1.5px;
+  color:var(--fin-accent,#2dd4bf);margin-top:20px;line-height:1.4;
+}
+.fin-cardmeta{
+  display:flex;justify-content:space-between;
+  margin-top:12px;font-size:9px;color:rgba(255,255,255,0.35);
+}
+.fin-cardmeta b{display:block;font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px}
+
+/* TOTAL SPENT */
+.fin-total{display:flex;justify-content:space-between;align-items:flex-end}
+.fin-total-label{font-size:12px;color:var(--fin-muted,#7a9a90)}
+.fin-total-val{font-size:22px;font-weight:700;color:var(--fin-heading,#ffffff);margin-top:3px}
+.fin-more{font-size:18px;color:var(--fin-muted,#7a9a90);opacity:0.6}
+
+/* CATEGORY CARDS */
+.fin-cats{display:flex;gap:10px}
+.fin-cat-main{
+  flex:1;border-radius:14px;
+  background:var(--fin-card,#1a3a30);
+  padding:14px;display:flex;align-items:center;gap:12px;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.fin-cat-icon-wrap{
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--fin-accent,#2dd4bf);flex-shrink:0;
+}
+.fin-cat-label{font-size:12px;font-weight:600;color:var(--fin-accent,#2dd4bf)}
+.fin-cat-val{font-size:16px;font-weight:700;color:var(--fin-heading,#ffffff);margin-top:2px}
+.fin-cat-side{
+  width:62px;border-radius:14px;
+  background:var(--fin-card,#1a3a30);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--fin-accent,#2dd4bf);
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+/* LIST ITEMS */
+.fin-list{display:flex;flex-direction:column;gap:14px}
+.fin-item{display:flex;align-items:center;gap:12px}
+.fin-item-chip{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.fin-item-chip.green{background:var(--fin-chip-green,#d8f0d8)}
+.fin-item-chip.pink{background:var(--fin-chip-pink,#fcd8e0)}
+.fin-item-chip.purple{background:var(--fin-chip-purple,#ecd8fc)}
+.fin-item-meta{flex:1}
+.fin-item-title{font-size:13px;font-weight:600;color:var(--fin-heading,#ffffff)}
+.fin-item-sub{font-size:11px;color:var(--fin-muted,#7a9a90);margin-top:1px}
+.fin-item-amt{font-size:14px;font-weight:700;color:var(--fin-heading,#ffffff)}
+
+/* HIGHLIGHT */
+.pe-hl{outline:2px solid var(--accent-p)!important;outline-offset:2px;border-radius:6px}
+
+/* ── RIGHT: PANEL ── */
+.panel-side{
+  background:var(--bg-panel);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.panel-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.panel-header h1{font-size:15px;font-weight:600}
+.panel-header p{font-size:11px;color:var(--text-2);margin-top:4px;line-height:1.5}
+.panel-body{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+
+/* AI NOTE */
+.ai-note{
+  display:flex;gap:8px;align-items:flex-start;
+  background:var(--bg-surface);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text-2);line-height:1.5;
+}
+.ai-note i{color:var(--accent-p);font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* KANBAN */
+.kanban{display:flex;flex-direction:column;gap:8px}
+.kcol{
+  border:1px solid var(--border);border-radius:10px;
+  background:var(--bg-surface);padding:10px;
+  transition:border-color 0.15s,background 0.15s;
+}
+.kcol.dragover{border-color:var(--accent-p);background:rgba(139,111,255,0.06)}
+.kcol-header{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.kdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kcol-name{font-size:12px;font-weight:500}
+.kcol-count{font-size:10px;color:var(--text-3);margin-left:auto}
+.kcol-items{display:flex;flex-direction:column;gap:4px;min-height:28px}
+.kitem{
+  background:var(--bg-panel);border:0.5px solid var(--border);
+  border-radius:7px;padding:8px 10px;font-size:12px;color:var(--text-1);
+  cursor:grab;display:flex;align-items:center;gap:8px;
+  transition:background 0.12s,border-color 0.12s;
+}
+.kitem:hover{background:var(--bg-hover);border-color:rgba(255,255,255,0.14)}
+.kitem:active{cursor:grabbing}
+.kswatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:0.5px solid rgba(128,128,128,0.25)}
+.klabel{flex:1}
+.kgrip{font-size:13px;color:var(--text-3)}
+.kempty{font-size:10px;color:var(--text-3);font-style:italic;padding:6px 4px}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border)}
+
+/* PALETTE STRIP */
+.pstrip-wrap{display:flex;flex-direction:column;gap:8px}
+.pstrip{display:flex;gap:3px;border-radius:7px;overflow:hidden;height:38px}
+.pstrip div{flex:1;cursor:pointer;transition:flex 0.2s}
+.pstrip div:hover{flex:2}
+.pmeta{display:flex;align-items:center;gap:10px}
+.pnav-btn{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border);
+  background:var(--bg-surface);color:var(--text-1);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background 0.15s;
+}
+.pnav-btn:hover{background:var(--bg-hover)}
+.pinfo{flex:1;text-align:center}
+.pname{font-size:13px;font-weight:500}
+.pcounter{font-size:10px;color:var(--text-3);margin-top:1px}
+.pkbd-hint{font-size:11px;color:var(--text-3);text-align:center}
+kbd{
+  font-family:ui-monospace,monospace;font-size:10px;
+  background:var(--bg-surface);border:0.5px solid var(--border);
+  border-radius:4px;padding:1px 5px;color:var(--text-2);
+}
+
+/* EXPORT */
+.export-row{display:flex;gap:8px}
+.abtn{
+  flex:1;padding:9px 8px;font-size:12px;font-weight:500;
+  border-radius:7px;border:1px solid var(--border);
+  background:var(--bg-surface);color:var(--text-1);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:background 0.15s;
+}
+.abtn:hover{background:var(--bg-hover)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(50px);
+  background:var(--bg-hover);border:1px solid var(--border);
+  border-radius:20px;padding:7px 16px;font-size:12px;
+  opacity:0;transition:all 0.22s;pointer-events:none;z-index:100;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── PHONE PREVIEW ── -->
+  <div class="preview-side">
+    <div class="phone" id="phone">
+      <div class="dynamic-island"></div>
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="font-size:10px;opacity:0.5">▮▮▮ WiFi</span>
+      </div>
+
+      <!-- Nav -->
+      <div class="fin-nav" data-el="app-bg">
+        <i class="ti ti-menu-2 fin-nav-icon" data-el="app-bg" aria-hidden="true"></i>
+        <div class="fin-avatar" data-el="avatar"></div>
+      </div>
+
+      <!-- Feed -->
+      <div class="fin-feed" data-el="app-bg">
+
+        <!-- Greeting -->
+        <div class="fin-greeting">
+          <div class="fin-name" data-el="heading">Ghulam</div>
+          <div class="fin-sub" data-el="muted-text">Welcome back!</div>
+        </div>
+
+        <!-- Card row -->
+        <div class="fin-card-row">
+          <div class="fin-plus-btn" data-el="card-surface">
+            <i class="ti ti-plus" data-el="accent-element" aria-hidden="true"></i>
+          </div>
+          <div class="fin-card" data-el="card-surface">
+            <div class="fin-card-top">
+              <div class="fin-chip"></div>
+              <div class="fin-visa" data-el="accent-element">VISA</div>
+            </div>
+            <div class="fin-cardnum" data-el="accent-element">4562 1122 4595<br>7852</div>
+            <div class="fin-cardmeta">
+              <div>CARD HOLDER<b>Ghulam</b></div>
+              <div>EXPIRY DATE<b>24/2020</b></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total spent -->
+        <div class="fin-total">
+          <div>
+            <div class="fin-total-label" data-el="muted-text">Total Spent</div>
+            <div class="fin-total-val" data-el="heading">$1,520.00</div>
+          </div>
+          <i class="ti ti-dots fin-more" data-el="muted-text" aria-hidden="true"></i>
+        </div>
+
+        <!-- Category cards -->
+        <div class="fin-cats">
+          <div class="fin-cat-main" data-el="card-surface">
+            <div class="fin-cat-icon-wrap" data-el="card-surface">
+              <i class="ti ti-gift" data-el="accent-element" aria-hidden="true"></i>
+            </div>
+            <div>
+              <div class="fin-cat-label" data-el="accent-element">Shopping</div>
+              <div class="fin-cat-val" data-el="heading">$300.00</div>
+            </div>
+          </div>
+          <div class="fin-cat-side" data-el="card-surface">
+            <i class="ti ti-car" data-el="accent-element" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <!-- List items -->
+        <div class="fin-list">
+          <div class="fin-item">
+            <div class="fin-item-chip green" data-el="chip-green">🛒</div>
+            <div class="fin-item-meta">
+              <div class="fin-item-title" data-el="heading">Grocery</div>
+              <div class="fin-item-sub" data-el="muted-text">Just now</div>
+            </div>
+            <div class="fin-item-amt" data-el="heading">$45</div>
+          </div>
+          <div class="fin-item">
+            <div class="fin-item-chip pink" data-el="chip-pink">🏋</div>
+            <div class="fin-item-meta">
+              <div class="fin-item-title" data-el="heading">Gym</div>
+              <div class="fin-item-sub" data-el="muted-text">23 Jun 2020</div>
+            </div>
+            <div class="fin-item-amt" data-el="heading">$125</div>
+          </div>
+          <div class="fin-item">
+            <div class="fin-item-chip purple" data-el="chip-purple">🧺</div>
+            <div class="fin-item-meta">
+              <div class="fin-item-title" data-el="heading">Laundry</div>
+              <div class="fin-item-sub" data-el="muted-text">21 Feb 2020</div>
+            </div>
+            <div class="fin-item-amt" data-el="heading">$200</div>
+          </div>
+        </div>
+
+      </div><!-- /fin-feed -->
+    </div><!-- /phone -->
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="panel-side">
+    <div class="panel-header">
+      <h1>AI element categorization</h1>
+      <p>Pre-sorted by AI. Hover an item to highlight it in the preview. Drag between columns to recategorize.</p>
+    </div>
+    <div class="panel-body">
+
+      <div class="ai-note">
+        <i class="ti ti-sparkles" aria-hidden="true"></i>
+        <div>AI scanned the screenshot and grouped 9 elements into Primary, Secondary, and Accent based on visual role.</div>
+      </div>
+
+      <!-- KANBAN -->
+      <div class="kanban" id="kanban"></div>
+
+      <hr class="divider">
+
+      <!-- PALETTE STRIP -->
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);margin-bottom:8px">
+          Cycle palettes
+        </div>
+        <div class="pstrip-wrap">
+          <div class="pstrip" id="pstrip"></div>
+          <div class="pmeta">
+            <button class="pnav-btn" id="btn-prev"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+            <div class="pinfo">
+              <div class="pname" id="pname">—</div>
+              <div class="pcounter" id="pcounter"></div>
+            </div>
+            <button class="pnav-btn" id="btn-next"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+          </div>
+          <div class="pkbd-hint"><kbd>Space</kbd> next &nbsp;·&nbsp; <kbd>←</kbd><kbd>→</kbd> step</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- EXPORT -->
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);margin-bottom:8px">
+          Export
+        </div>
+        <div class="export-row">
+          <button class="abtn" id="btn-css"><i class="ti ti-copy" aria-hidden="true"></i> Copy CSS</button>
+          <button class="abtn" id="btn-json"><i class="ti ti-braces" aria-hidden="true"></i> Copy JSON</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PALETTES ──────────────────────────────────────────────────────────────────
+const PALETTES = [
+  { name:'Dark teal (default)', bg:'#0d1f1a', card:'#1a3a30', accent:'#2dd4bf', heading:'#ffffff', muted:'#7a9a90', avatar:'#e8b49a', chipGreen:'#1a3a20', chipPink:'#3a1a28', chipPurple:'#2a1a3a' },
+  { name:'Violet night',        bg:'#100820', card:'#1f1040', accent:'#a78bfa', heading:'#ede9fe', muted:'#6050a0', avatar:'#a78bfa', chipGreen:'#1a1530', chipPink:'#251530', chipPurple:'#201040' },
+  { name:'Ocean deep',          bg:'#071b28', card:'#0f2f44', accent:'#38bdf8', heading:'#e0f4ff', muted:'#4a7a9a', avatar:'#38bdf8', chipGreen:'#0a2a20', chipPink:'#1a1a30', chipPurple:'#1a1040' },
+  { name:'Crimson',             bg:'#160608', card:'#2a0c12', accent:'#f87171', heading:'#fee2e2', muted:'#8a4a4f', avatar:'#f87171', chipGreen:'#1a0a10', chipPink:'#2a0818', chipPurple:'#1a0828' },
+  { name:'Amber warm',          bg:'#160e02', card:'#2c1a02', accent:'#fbbf24', heading:'#fef3c7', muted:'#8a6a2a', avatar:'#fbbf24', chipGreen:'#1a1402', chipPink:'#2a0c10', chipPurple:'#1a0c28' },
+  { name:'Forest',              bg:'#081d10', card:'#11301c', accent:'#4ade80', heading:'#dcfce7', muted:'#4a7256', avatar:'#4ade80', chipGreen:'#0a2a10', chipPink:'#1a1020', chipPurple:'#100c28' },
+  { name:'Light mode',          bg:'#f4f4fa', card:'#ffffff', accent:'#4a5aff', heading:'#1a1a2a', muted:'#8888a0', avatar:'#4a5aff', chipGreen:'#d8f0d8', chipPink:'#fcd8e0', chipPurple:'#ecd8fc' },
+  { name:'Rose gold',           bg:'#1c0c12', card:'#301626', accent:'#f9a8d4', heading:'#fce7f3', muted:'#80505f', avatar:'#f9a8d4', chipGreen:'#0c1a10', chipPink:'#2a0818', chipPurple:'#1a0828' },
+  { name:'Slate',               bg:'#0f172a', card:'#1e293b', accent:'#94a3b8', heading:'#e2e8f0', muted:'#52647a', avatar:'#94a3b8', chipGreen:'#0a1a10', chipPink:'#1a0a10', chipPurple:'#100a28' },
+  { name:'Neon',                bg:'#050505', card:'#141414', accent:'#d4ff00', heading:'#ffffff', muted:'#5a5a5a', avatar:'#d4ff00', chipGreen:'#0a1400', chipPink:'#1a0808', chipPurple:'#0a0820' },
+  { name:'Mint fresh',          bg:'#f6fbf8', card:'#dcf2e4', accent:'#3fae7a', heading:'#102018', muted:'#9ab8a8', avatar:'#3fae7a', chipGreen:'#c8ecd4', chipPink:'#fcd8e0', chipPurple:'#ecd8fc' },
+  { name:'Indigo',              bg:'#0e0e2e', card:'#16165a', accent:'#818cf8', heading:'#e0e7ff', muted:'#5050a0', avatar:'#818cf8', chipGreen:'#0a1428', chipPink:'#1a0828', chipPurple:'#100840' },
+];
+
+// ── ELEMENT REGISTRY ──────────────────────────────────────────────────────────
+// Each entry: { id (data-el value), label, role, swatch }
+// "role" controls which palette color is applied to elements with data-el=id
+const ELEMENTS = [
+  { id:'app-bg',        label:'App background / Nav',     role:'primary',   swatch:'#0d1f1a' },
+  { id:'heading',       label:'Headings & amounts',       role:'primary',   swatch:'#ffffff' },
+  { id:'muted-text',    label:'Secondary text & labels',  role:'secondary', swatch:'#7a9a90' },
+  { id:'card-surface',  label:'Card surfaces',            role:'secondary', swatch:'#1a3a30' },
+  { id:'chip-green',    label:'Grocery icon chip',        role:'secondary', swatch:'#d8f0d8' },
+  { id:'chip-pink',     label:'Gym icon chip',            role:'secondary', swatch:'#fcd8e0' },
+  { id:'chip-purple',   label:'Laundry icon chip',        role:'secondary', swatch:'#ecd8fc' },
+  { id:'accent-element',label:'Accent (VISA, icons, card num)',role:'accent',swatch:'#2dd4bf' },
+  { id:'avatar',        label:'Avatar',                   role:'accent',    swatch:'#e8b49a' },
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let pidx = 0;
+let draggingId = null;
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── RENDER KANBAN ─────────────────────────────────────────────────────────────
+const ROLE_META = {
+  primary:   { color: '#8b6fff', label: 'Primary' },
+  secondary: { color: '#38bdf8', label: 'Secondary' },
+  accent:    { color: '#fbbf24', label: 'Accent' },
+};
+
+function renderKanban() {
+  const kanban = document.getElementById('kanban');
+  kanban.innerHTML = '';
+
+  ['primary','secondary','accent'].forEach(role => {
+    const items = ELEMENTS.filter(e => e.role === role);
+    const meta  = ROLE_META[role];
+
+    const col = document.createElement('div');
+    col.className = 'kcol';
+    col.dataset.role = role;
+    col.innerHTML = `
+      <div class="kcol-header">
+        <span class="kdot" style="background:${meta.color}"></span>
+        <span class="kcol-name">${meta.label}</span>
+        <span class="kcol-count">${items.length}</span>
+      </div>
+      <div class="kcol-items" id="kcol-${role}">
+        ${items.length === 0 ? '<div class="kempty">drop items here</div>' : ''}
+      </div>
+    `;
+
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('dragover'); });
+    col.addEventListener('dragleave', () => col.classList.remove('dragover'));
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.classList.remove('dragover');
+      const el = ELEMENTS.find(x => x.id === draggingId);
+      if (el) {
+        el.role = role;
+        renderKanban();
+        applyPalette(PALETTES[pidx]);
+      }
+      draggingId = null;
+    });
+
+    kanban.appendChild(col);
+
+    // add items
+    const itemsContainer = col.querySelector('.kcol-items');
+    items.forEach(el => {
+      const item = document.createElement('div');
+      item.className = 'kitem';
+      item.draggable = true;
+      item.dataset.id = el.id;
+      item.innerHTML = `
+        <span class="kswatch" style="background:${el.swatch}"></span>
+        <span class="klabel">${el.label}</span>
+        <i class="ti ti-grip-vertical kgrip" aria-hidden="true"></i>
+      `;
+      item.addEventListener('dragstart', () => draggingId = el.id);
+      item.addEventListener('dragend',   () => { draggingId = null; });
+      item.addEventListener('mouseenter', () => highlight(el.id, true));
+      item.addEventListener('mouseleave', () => highlight(el.id, false));
+      itemsContainer.appendChild(item);
+    });
+  });
+}
+
+// ── HIGHLIGHT ─────────────────────────────────────────────────────────────────
+function highlight(id, on) {
+  document.querySelectorAll(`[data-el="${id}"]`).forEach(el => {
+    el.classList.toggle('pe-hl', on);
+  });
+}
+
+// ── APPLY PALETTE ─────────────────────────────────────────────────────────────
+function applyPalette(p) {
+  const phone = document.getElementById('phone');
+
+  // Set CSS vars on the phone element for structural colors
+  phone.style.setProperty('--fin-bg',     p.bg);
+  phone.style.setProperty('--fin-card',   p.card);
+  phone.style.setProperty('--fin-accent', p.accent);
+  phone.style.setProperty('--fin-heading',p.heading);
+  phone.style.setProperty('--fin-muted',  p.muted);
+  phone.style.setProperty('--fin-avatar', p.avatar);
+  phone.style.setProperty('--fin-chip-green',  p.chipGreen);
+  phone.style.setProperty('--fin-chip-pink',   p.chipPink);
+  phone.style.setProperty('--fin-chip-purple', p.chipPurple);
+
+  // Apply per element based on its current role assignment
+  ELEMENTS.forEach(({ id, role }) => {
+    document.querySelectorAll(`[data-el="${id}"]`).forEach(el => {
+      // Reset first
+      el.style.background  = '';
+      el.style.color       = '';
+      el.style.borderColor = '';
+
+      if (role === 'primary') {
+        if (id === 'app-bg') {
+          el.style.background = p.bg;
+          el.style.color      = p.heading;
+        } else if (id === 'heading') {
+          el.style.color = p.heading;
+        } else {
+          el.style.background = p.bg;
+          el.style.color      = p.heading;
+        }
+      }
+
+      if (role === 'secondary') {
+        if (id === 'muted-text') {
+          el.style.color = p.muted;
+        } else if (id === 'card-surface') {
+          el.style.background = p.card;
+        } else if (id === 'chip-green') {
+          el.style.background = p.chipGreen;
+        } else if (id === 'chip-pink') {
+          el.style.background = p.chipPink;
+        } else if (id === 'chip-purple') {
+          el.style.background = p.chipPurple;
+        } else {
+          el.style.background = p.card;
+          el.style.color      = p.muted;
+        }
+      }
+
+      if (role === 'accent') {
+        if (id === 'avatar') {
+          el.style.background = p.avatar;
+        } else if (id === 'accent-element') {
+          el.style.color = p.accent;
+        } else {
+          el.style.color = p.accent;
+        }
+      }
+    });
+  });
+
+  updateStrip(p);
+}
+
+// ── PALETTE STRIP ─────────────────────────────────────────────────────────────
+function updateStrip(p) {
+  const strip = document.getElementById('pstrip');
+  strip.innerHTML = '';
+  [p.bg, p.card, p.accent, p.heading].forEach((c, i) => {
+    const d = document.createElement('div');
+    d.style.background = c;
+    if (c === '#ffffff' || c === '#f4f4fa' || c === '#f6fbf8') {
+      d.style.border = '0.5px solid rgba(128,128,128,0.2)';
+    }
+    d.title = ['BG','Card','Accent','Text'][i] + ': ' + c;
+    strip.appendChild(d);
+  });
+  document.getElementById('pname').textContent    = p.name;
+  document.getElementById('pcounter').textContent = (pidx + 1) + ' of ' + PALETTES.length;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function goTo(i) {
+  pidx = ((i % PALETTES.length) + PALETTES.length) % PALETTES.length;
+  applyPalette(PALETTES[pidx]);
+}
+
+document.getElementById('btn-prev').onclick = () => goTo(pidx - 1);
+document.getElementById('btn-next').onclick = () => goTo(pidx + 1);
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space')      { e.preventDefault(); goTo(pidx + 1); }
+  if (e.code === 'ArrowRight') { e.preventDefault(); goTo(pidx + 1); }
+  if (e.code === 'ArrowLeft')  { e.preventDefault(); goTo(pidx - 1); }
+});
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-css').onclick = () => {
+  const p = PALETTES[pidx];
+  const txt = `/* ${p.name} */\n--color-primary: ${p.bg};\n--color-secondary: ${p.card};\n--color-accent: ${p.accent};\n--color-text: ${p.heading};\n--color-muted: ${p.muted};`;
+  navigator.clipboard.writeText(txt).then(() => toast('CSS vars copied!'));
+};
+
+document.getElementById('btn-json').onclick = () => {
+  const p = PALETTES[pidx];
+  const tokens = { palette: p.name, colors: { primary: p.bg, secondary: p.card, accent: p.accent, text: p.heading, muted: p.muted } };
+  navigator.clipboard.writeText(JSON.stringify(tokens, null, 2)).then(() => toast('JSON copied!'));
+};
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderKanban();
+applyPalette(PALETTES[0]);
+</script>
+</body>
+</html>
